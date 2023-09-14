@@ -72,9 +72,11 @@ pipeline {
         
         stage('Post always'){
             steps{
-                 sh 'docker compose down'
-                 sh 'docker volume rm big_data_second_lab_cassandra_config'
-                 sh 'docker logout'
+                dir("Big_data_second_lab") {
+                    sh 'docker compose down'
+                    sh 'docker volume rm big_data_second_lab_cassandra_config'
+                    sh 'docker logout'
+                }
             }
         }
     }
