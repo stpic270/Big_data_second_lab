@@ -48,4 +48,6 @@ python src/predict.py -m SVM
 
 Рис. 1 результаты python inference.py -m SVM
 
->>>>>>> bf60a8d8a249cf82531bda6daf7b2ef3d6261178
+![image](<Screenshot from 2023-09-14 15-25-42-1.png>)
+
+Рис. 2 результаты python use_cassandra.py
