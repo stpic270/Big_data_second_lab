@@ -1,0 +1,81 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKERHUB_CREDS=credentials('sikasi')
+        LC_ALL = "en_US.UTF-8"
+        LANG    = "en_US.UTF-8"
+        LANGUAGE = "en_US.UTF-8"
+
+    }
+
+    options {
+            timestamps()
+            skipDefaultCheckout(true)
+        }
+
+    stages {
+
+        stage('Clone github repository') {
+            steps {
+                cleanWs()
+                sh 'git clone -b main https://github.com/stpic270/Big_data_second_lab.git'
+				}
+			}
+
+        stage('cd to repo') {
+            steps {
+                sh 'cd Big_data_second_lab && dir'
+				}
+			}
+
+        stage('Login'){
+            steps{
+                //withCredentials([usernamePassword(credentialsId: 'sikasi', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]){
+                //sh 'echo %DOCKER_REGISTRY_PWD% | docker login -u %DOCKER_REGISTRY_USER% --password-stdin'}
+                // echo '%DOCKERHUB_CREDS_USR%'
+                sh 'echo $DOCKERHUB_CREDS_PSW | docker login -u $DOCKERHUB_CREDS_USR --password-stdin'
+                // sh 'docker login -u %DOCKERHUB_CREDS_USR% -p %DOCKERHUB_CREDS_PSW%'
+                }
+            }
+
+        stage('Start and run project'){
+            steps{
+                dir("Big_data_second_lab") {
+
+                    sh  '''
+                        cd Big_data_second_lab && docker compose build
+                        docker compose up --no-start
+                        docker start big_data_second_lab-cassandra-1
+                        docker exec -t big_data_second_lab-cassandra-1 bash -c "echo '\n' >> config/cassandra_config.txt && ip -4 -o address >> config/cassandra_config.txt"
+                        docker start big_data_second_lab-model-1
+                        docker exec big_data_second_lab-model-1 bash -c "scripts/cassandra.sh"
+                        '''
+                }
+            }
+        }
+
+        stage('Checkout container logs') {
+            steps {
+                        sh  '''
+                            docker logs --tail 30 big_data_second_lab-model-1
+                            '''
+                    }
+                }
+
+        stage('Push'){
+            steps{
+                sh 'docker push stpic270/bd-secl-d:latest'
+                sh 'docker push stpic270/bd-secl-cassandra:latest'
+            }
+        }
+        
+        stage('Post always'){
+            steps{
+                 sh 'docker compose down'
+                 sh 'docker volume rm big_data_second_lab_cassandra_config'
+                 sh 'docker logout'
+            }
+        }
+    }
+}
