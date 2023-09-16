@@ -51,3 +51,13 @@ python src/predict.py -m SVM
 ![image](<Screenshot from 2023-09-14 15-25-42-1.png>)
 
 Рис. 2 результаты python use_cassandra.py
+
+1. Собрать и запустить контейнеры с помощью docker compose:
+### docker compose up -d --no-start
+
+2. Запустить контейнеры базы данных и модели:
+### docker start big_data_second_lab-model-1 && docker start big_data_second_lab-cassandra-1
+
+3. Выполнить следующие команды для передачи ip адресса базы данных и передать результаты в cassandra:
+### docker exec -t big_data_second_lab-cassandra-1 bash -c "echo '\n' >> config/cassandra_config.txt && ip -4 -o address >> config/cassandra_config.txt"
+### docker exec -t big_data_second_lab-model-1 bash -c "scripts/cassandra.sh"
