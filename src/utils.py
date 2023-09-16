@@ -130,7 +130,7 @@ def get_credentials(pattern):
   l, p = 'login:', 'password:'
   credentials = []
   with open('test/cassandra_config.txt', 'r') as f:
-    for line in f:
+    for i, line in enumerate(f):
       s = line.strip()
       if l in s:
         le = len(l)
@@ -139,7 +139,7 @@ def get_credentials(pattern):
         le = len(p)
         le2 = len(credentials[0])
         credentials.append(line.strip()[le:le+le2])
-      if '172.' in line:
+      if '172.' in line or i == 2:
         sp = re.findall(pattern, line)
         credentials.append(sp[0])
     f.close
