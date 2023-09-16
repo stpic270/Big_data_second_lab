@@ -139,7 +139,7 @@ def get_credentials(pattern):
         le = len(p)
         le2 = len(credentials[0])
         credentials.append(line.strip()[le:le+le2])
-      if '172.' in line or i == 2:
+      if '172.' in line or "eth0" in line:
         sp = re.findall(pattern, line)
         credentials.append(sp[0])
     f.close
