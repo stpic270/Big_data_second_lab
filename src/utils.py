@@ -64,7 +64,7 @@ def graphic(y_test, y_pred, savepath=None):
     else:
         plt.savefig(savepath)
 
-
+# Execute query 
 def executions(ses, q):
   flag=True
   while flag==True:
@@ -129,7 +129,6 @@ def create_table(folder, session):
 
     #closing the file
     fares.close()
-
 
 def get_credentials(pattern):
   l, p = 'login:', 'password:'
