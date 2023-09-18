@@ -23,10 +23,11 @@ while flag==True:
     print('This time cassandra did not answer, program will sleep for 40s and  try again')
     time.sleep(40)
 
-
+# Create namespaces and tables
 for m in ['BNB', 'SVM', 'LOG_REG']:
   create_table(m, session)
 
+# Delete credentials
 with open("test/cassandra_config.txt", "r") as f:
   lines = f.readlines()
 with open("test/cassandra_config.txt", "w") as f:
