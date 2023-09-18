@@ -4,12 +4,14 @@ from utils import executions, create_table, get_credentials
 import cassandra
 import time
 
+# Pattern to get ip
 pattern =r'(\d+.\d+.\d+.\d+)/\d+'
 
+# Get credentials
 credentials = get_credentials(pattern)
 auth_provider = PlainTextAuthProvider(username=credentials[0], password=credentials[1])
 
-# Connect to the cluster's default port
+# Connect to cassandra
 flag=True
 while flag==True:
   try:
@@ -20,6 +22,7 @@ while flag==True:
     print(er)
     print('This time cassandra did not answer, program will sleep for 40s and  try again')
     time.sleep(40)
+
 
 for m in ['BNB', 'SVM', 'LOG_REG']:
   create_table(m, session)
